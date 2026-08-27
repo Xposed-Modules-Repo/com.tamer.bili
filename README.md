@@ -25,6 +25,7 @@ An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`,
 | listen_pause（关/off） | 听视频播完当前视频即暂停，不自动连播（零监听）/ pause when the current video ends in mini-player (zero-listener) |
 | hide_triple / hide_vote / hide_up（关/off） | 隐藏一键三连动画/投票面板/UP 关注引导 / hide triple-action animation, vote panel and follow-bubble hints |
 | no_refresh（关/off） | 切回首页不自动重载推荐流 / skip the automatic feed reload when returning home |
+| share_qq（开/on） | 分享面板补回「分享到 QQ」，与微信同排；点击走自带 QQ 互联链路（tauth + 内置 qq.appId），弹出 QQ 分享面板选好友/群 / restore the Share-to-QQ entry next to WeChat; taps use the app's native QQ OpenSDK flow (share sheet to pick friends/groups) |
 
 所有开关独立可逆；总开关关闭后模块完全休眠。
 Every switch is independently reversible; the master switch disables the whole module.
