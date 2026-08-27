@@ -58,7 +58,10 @@ Logs: filter `BiliTamer`.
 ## 已知限制 / Known limitations
 
 * 仅适配实测版本 6.3.0，升级后混淆锚点可能漂移（看 `hook FAILED` 日志）/ tested against 6.3.0 only;
-* 评论区横幅及其它评论区广告未处理 / comment-area ads not handled yet;
+* 国际版评论区目前没有广告；横幅等广告仅在使用全局身份声明（旧行为）时出现，默认的
+  评论区限定模式无此副作用 / the international comment area currently has no ads; banner ads
+  only appear under the legacy global identity declaration — the default scoped mode has no
+  such side effect;
 * IP 属地显示由服务端策略决定，属风控敏感功能 / the IP-location display is server-controlled.
 
 ## 鸣谢 / Acknowledgments
