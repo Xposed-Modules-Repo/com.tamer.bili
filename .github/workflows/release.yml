@@ -1,0 +1,25 @@
+name: Create Release
+# Xposed-Modules-Repo convention: tag = [versionCode]-[versionName] (e.g. 7-1.3.2)
+# -> Release titled "1.3.2" with the APK attached.
+on:
+  push:
+    tags: ['**']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create release with APK asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VER="${TAG#*-}"
+          ASSET="apk/BiliTamer-v${VER}.apk"
+          test -f "$ASSET" || { echo "missing $ASSET"; exit 1; }
+          gh release create "$TAG" \
+            --title "${VER}" \
+            --notes-file RELEASE_NOTES.md \
+            "$ASSET"
