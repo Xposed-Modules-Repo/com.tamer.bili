@@ -1,5 +1,30 @@
 # BiliTamer Release notes
 
+## v1.6.1
+
+* **修复 / Fixed**: 分发用户反馈的「播放随机黑屏、只有声音」：模块此前在解码**自动顺位**下
+  无条件向服务端请求 AV1/HEVC 流（fnval 位强制 OR），不校验设备自身的硬解能力——没有
+  HEVC/AV1 硬解的设备上播放器只能软解或解码失败，音频轨正常播放而画面黑。「随机」是因为
+  不同视频服务端下发的编码不同。现自动顺位按 `MediaCodecList` 硬解能力过滤**请求位**：
+  设备没有硬件解码器的编码不再写入 fnval，服务端即不下发对应流；**只过滤请求、不替换
+  解码**——自动顺位的选择仍完全交给原逻辑，由其在服务端实际下发的流集合上自行回退
+  （AVC 恒在），锁定 HEVC/AV1 行为不变。探测异常时按支持处理（fail-open，保持旧行为），
+  结果进程内缓存。
+  / Fixed the reported random black-screen-with-audio playback: in auto mode the module
+  unconditionally requested AV1/HEVC streams via fnval without checking the device's own
+  hardware decode capability, so devices without an HEVC/AV1 hardware decoder software-
+  decode (or fail) while audio keeps playing. Auto mode now filters the requested format
+  bits by MediaCodecList hardware-decoder availability: codecs the device cannot
+  hardware-decode are never requested, so the server stops delivering them. Filter only,
+  no substitution — the app's own preference logic still chooses freely among the
+  delivered streams (AVC is always the baseline); locked modes are untouched. Probing
+  failures fail open; results are cached per process.
+* **新开关 / New**: 设置页「按硬解能力自动过滤 HEVC/AV1」（出厂默认开）。锁定 HEVC/AV1
+  是用户显式选择，不被过滤，仅在设备无对应硬解时打一条警告日志 / New default-on switch
+  "HW-decode auto filter" in settings. Locked HEVC/AV1 remain explicit user overrides
+  (never filtered); a warning is logged once when the locked codec has no hw decoder.
+* 构建 / Build: versionCode 11。
+
 ## v1.6.0
 
 * **适配 / Adaptation**: 适配哔哩哔哩国际版 **6.4.0**（versionCode 不变，仍为 10）。6.4.0
