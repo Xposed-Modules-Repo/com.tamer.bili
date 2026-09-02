@@ -1,5 +1,39 @@
 # BiliTamer Release notes
 
+## v1.7.0
+
+* **首页布局对齐国内版 / CN-style home layout (6.4.0)**:
+  - 顶栏搜索栏右侧加消息入口（代码自绘信封图标，不依赖目标资源），未读时显示红点+数字
+    角标（与消息页角标同源，99+ 封顶）/ A message entry on the top bar (self-drawn icon,
+    no target resources); red-dot numeric badge fed by the same source as the in-app IM
+    badge (cap 99+).
+  - 顶栏左侧头像变为「我的」入口：经真实 tab 派发打开完整「我的」页（不再是深链的
+    不完整壳页面）/ Tapping the top-left avatar now opens the full "Mine" tab page via the
+    app's own tab-select action (not the incomplete deep-link shell).
+  - 底栏移除「消息」tab（数据级，页面一并收敛）；「我的」tab 默认隐藏（渲染级：数据保留，
+    顶栏头像入口仍可打开完整页）/ Bottom bar: the Message tab is removed at data level;
+    the Mine tab is hidden at render level by default (data kept so the avatar entry keeps
+    opening the full page).
+* **首页推荐分区屏蔽 / Feed partition (tag) blocker**: 按推荐卡的分区标签（tname）整卡屏蔽，
+  词表管理支持批量输入（中英文逗号/分号/顿号/换行均可）、搜索定位、逐词移除，**无词数上限**。
+  匹配为包含关系（加「游戏」会连带「主机游戏」）。/ Block feed cards whose partition tag
+  (tname) contains any blocked word. Word list editor: bulk input (commas/semicolons/
+  newlines), search-locate, per-word removal, no word-count limit. Matching is substring.
+* **配置通道最小权限化 / Minimal-permission config channel**: 设置保存不再依赖 root——保存时
+  携带配置+代次拉起目标应用，模块在宿主进程截获并写入宿主自有副本（host-conf），重启后按
+  conf_gen 代次协议选用最新配置（陈旧副本永不反盖）。root 仅作开发兜底；LSPosed 2.2.0
+  已弃用的 XSharedPreferences 通道不再使用。/ Saving settings no longer needs root:
+  the app delivers the config (with a generation stamp) by launching the target, the module
+  intercepts it in-process and persists to the host's own copy; on every start the newest
+  generation wins. Root stays a dev-only fallback; the deprecated XSharedPreferences
+  channel is not used.
+* **分享到 QQ（6.4.0 门控）/ Share-to-QQ gating (6.4.0)**: 6.4.0 上 QQ 客户端校验调用方签名
+  （错误码 25201），重签名包无法原生卡片分享——分享面板不再注入 QQ 渠道以免误触报错；
+  6.3.0 保持原生注入。/ On 6.4.0 QQ verifies the caller signature (error 25201), so native
+  card share is impossible for a repackaged build — the QQ entry is not injected into the
+  share panel; 6.3.0 keeps the native entry.
+* 构建 / Build: versionCode 12。
+
 ## v1.6.1
 
 * **修复 / Fixed**: 分发用户反馈的「播放随机黑屏、只有声音」：模块此前在解码**自动顺位**下
