@@ -1,3 +1,23 @@
+## v1.7.14
+
+* **首页直播板块解锁 / Home live channel unlocked**: 国际版服务端按身份把顶栏「直播」那一格裁掉了，
+  模块在「标题」与「页面」共用的那个收口处把它补回去，追加在末尾所以既有页的下标一个都不动，
+  点「直播」进的就是直播流 / The server drops the live tab from the home top bar for the intl
+  identity; the module re-adds it at the single funnel that feeds both the titles and the pager
+  pages, appended last so existing page indices stay untouched.
+* **点头像进「我的」修好 / Avatar now opens the Mine page**: 6.6.0 起底栏点击不走旧动作总线，
+  模块改为直接投宿主自己那发「按深链切底栏页」的动作（匹配键从宿主下发的那格数据里现读，
+  6.3.0–6.6.0 四版候选都在 apk 里逐个对读过），此前头像点开落到「动态」的那次几何错位一并修掉 /
+  On 6.6.0 the bottom-bar click no longer goes through the old action bus, so the module now
+  dispatches the host's own route-to-tab action; the earlier mis-tap that landed on the dynamic
+  feed is fixed too.
+* **评论区/主页 IP 属地 6.6.0 复核 + 自检日志改用真键名 / IP location re-verified on 6.6.0**:
+  功能开/关各跑一轮实机对照（关闭时两个不同视频的属地标签都消失，开启时评论区与空间页正常显示属地），
+  启动自检行现在打印 conf 的真实键名（`ip_location_enabled=` 而不是 `ip=`）/ On-device A/B on 6.6.0
+  confirms the rewrite chain still delivers `location`, and the startup self-check line now prints
+  the real conf key names so the log can't be copied into a conf file as a wrong key.
+
+
 ## v1.7.13
 
 > 本版含未单独发布的 v1.7.12；1.7.11 及以下直接覆盖安装。
