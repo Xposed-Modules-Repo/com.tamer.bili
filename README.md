@@ -13,8 +13,8 @@
 > Not affiliated with Bilibili Inc.; trademarks and copyrights belong to their owners.
 > For learning and research on Android hooking techniques only.
 
-面向**国际版哔哩哔哩** `com.bilibili.app.in`（实测适配 **6.3.0 / 6.4.0**）的 LSPosed 模块。
-An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`, tested against **6.3.0 / 6.4.0**).
+面向**国际版哔哩哔哩** `com.bilibili.app.in`（实测适配 **6.3.0 / 6.4.0 / 6.5.0 / 6.6.0**）的 LSPosed 模块。
+An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`, tested against **6.3.0–6.6.0**).
 
 ---
 
@@ -35,10 +35,15 @@ An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`,
 所有开关独立可逆；总开关关闭后模块完全休眠。
 Every switch is independently reversible; the master switch disables the whole module.
 
+上表是最初几版的功能面，未穷举现有开关（多 CDN 多线程下载/播放加速、首页推荐流清洗三项、
+首页直播板块、竖屏卡片角标清理等都已在包里）；完整清单与逐版锚点校准见源仓 README 与
+RELEASE_NOTES / The table above is the early feature list, not exhaustive — the full switch list
+and the per-version anchor calibration live in the source repository's README and release notes.
+
 ## 环境要求 / Requirements
 
 * 已 root 的 Android 设备：Magisk 或 KernelSU + Zygisk + LSPosed / rooted device with Zygisk + LSPosed;
-* 国际版哔哩哔哩 6.3.0 / 6.4.0（com.bilibili.app.in）/ international Bilibili 6.3.0 / 6.4.0.
+* 国际版哔哩哔哩 6.3.0–6.6.0（com.bilibili.app.in，6.6.0 = 9130300）/ international Bilibili 6.3.0–6.6.0.
 
 ## 使用方法 / Installation
 
@@ -139,8 +144,10 @@ process freezing). libxposed's `onPackageReady` delivers the right classLoader i
 
 ## 已知限制 / Known limitations
 
-* 仅适配实测版本 6.3.0 / 6.4.0；其它版本需自行校准混淆锚点 / tested against 6.3.0 and
-  6.4.0 only;
+* 仅适配实测版本 6.3.0–6.6.0；其它版本需自行校准混淆锚点 / tested against 6.3.0–6.6.0 only;
+* 首页清洗三项（只展 UGC／干净卡片／禁竖屏播放器）的卡片载体只在 6.6.0（9130300）上实机取证过；
+  6.3.0–6.5.0 未验收，可能整项不生效 / The feed-cleanup trio is carrier-verified on 6.6.0 only;
+  it may be inert on 6.3.0–6.5.0;
 * 国际版评论区目前没有广告；横幅等广告仅在使用全局身份声明（v1.2 旧行为）时出现，
   默认的评论区限定模式无此副作用 / The international comment area currently has no ads;
   banner ads only appear when the legacy global identity declaration is used — the default

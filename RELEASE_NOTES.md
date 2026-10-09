@@ -1,3 +1,25 @@
+## v1.8.0
+
+> **需要先卸载旧版 / Uninstall the old version first**: 本版换了签名密钥，从 1.7.x 及更早版本原地升级
+> 会被系统拒绝（`INSTALL_FAILED_UPDATE_INCOMPATIBLE`）；请先卸载再安装，卸载会清掉模块自己保存的开关
+> 设置，装好后重新勾一遍。 / This build is signed with a new key, so updating in place is rejected —
+> uninstall first, then install.
+
+* **首页推荐流清洗三项（移植自 MBGA）/ Three home-feed cleanup switches**: 只展示 UGC（官方合集、活动、
+  直播等 `cardGoto≠av` 的整卡移除）、干净的视频卡片（去推荐理由与竖屏角标，UP 主入口沿用宿主自己的名字行）、
+  禁止竖屏播放器（卡片自带的竖屏路由改写为横屏播放页路由）；三项都会改变首页内容，出厂默认关，
+  设置里各自独立可逆。 / UGC-only feed, clean video cards (no reason row, no portrait badge) and a
+  no-portrait-player switch — all three off by default.
+* **起播不再卡在 0 KB / Startup no longer stalls at 0 KB**: 首字节不再等「一整块 256 KiB 先下完再吐」，
+  改成先用 1 个字节问出哪个节点还活着、然后在一条连接上边收边吐（每口 ≤64 KiB）；同时并发的多条播放流
+  不再互相抢光并发许可。 / The first byte no longer waits for a fully buffered piece, and concurrent
+  playbacks no longer starve each other on the shared concurrency permits.
+* **拖回看过的区间不再重新加载 / Seeking back no longer re-downloads**: 块清单原先只在连接关闭时落盘，
+  而长视频的播放轨是一条十几分钟不关闭的连接——中途进程被杀就「字节在盘上、清单却不存在」，整条视频重下；
+  现在每 8 MiB 落一次，实机重开同一条视频的读数是 `disk=1207864 net=0`。 / The block index is now
+  flushed every 8 MiB instead of only at connection close, so already-cached ranges are served from disk.
+
+
 ## v1.7.14
 
 * **首页直播板块解锁 / Home live channel unlocked**: 国际版服务端按身份把顶栏「直播」那一格裁掉了，
