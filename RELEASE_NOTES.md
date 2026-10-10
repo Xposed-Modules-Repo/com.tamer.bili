@@ -1,3 +1,21 @@
+## v1.9.1
+
+* **干净卡片不再把上传者名字一起清掉 / Clean cards keep the uploader name**: 「推荐理由」那族数据原先
+  整对象置 null，而宿主把这个对象同时当作「名字行要不要渲染」的信号，于是标签和名字一起消失；现在
+  保留对象、只清里面的文字与配色，实机开启轮 6/6 张卡名字都在、屏上「××万点赞」这类标签一条不剩。
+  / The reason-tag object doubled as the host's signal to draw the name row, so nulling it removed the
+  name too; now only its text and colors are cleared.
+* **投递失败看得见 / A failed config delivery is now visible**: 设置页原先在拉起宿主**之前**就显示
+  「已保存，正在拉起」，拉起被 ROM 拦下时用户读到的是「开关不生效」；现在这一步的失败原因直接印在
+  状态行和 Toast 上，并给出一条不依赖模块拉起的手动重挂路径（彻底退出 B 站再打开一次）。同一轮
+  顺手删掉了首页那组早已用完的反编译探针，它每次启动打几十行、恰好把那行供人自查的 `confSrc=`
+  冲出日志。/ Save no longer claims a delivery it did not complete; the reason and a manual fallback
+  are shown, and the spent home-screen RE probe that drowned the self-check line is gone.
+* **配置代次单调化 / Config generation is now monotonic**: 保存代次从「取当前时刻」改为
+  「取当前时刻与已有最大代次 + 1 的较大者」，系统时钟回拨（换机、恢复备份、手动改时间）不会再让此后
+  每一次保存都被宿主判成陈旧配置而永久丢弃。/ Generation is `max(now, last+1)`, so a clock set
+  backwards can no longer make every later save look stale to the host.
+
 ## v1.9.0
 
 * **起播不再先跑一趟探路 / Startup no longer waits for a probe round trip**: v1.8.0 把「问 1 个字节」的探路
