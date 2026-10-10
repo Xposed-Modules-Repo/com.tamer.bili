@@ -1,3 +1,20 @@
+## v1.9.0
+
+* **起播不再先跑一趟探路 / Startup no longer waits for a probe round trip**: v1.8.0 把「问 1 个字节」的探路
+  串在起播请求之前，首字节成了两段往返相加，候选全黑时还要把探路预算等满；现在第一条候选立刻开流、
+  探路只在旁边问「还有谁活着、文件多大」（桌面回归 631→306 ms、929→5 ms）。剩下的快慢就看节点给字节有多快。
+  / The first candidate now streams immediately while probing runs alongside it, so startup pays one
+  round trip instead of two.
+* **新增两个开关 / Two new switches**: 「关闭大卡片」（`feed_no_large_card`，按卡片类型名移除
+  占满整屏宽度的轮播卡/大封面卡/内联播放卡，双列小卡一张不动；实测它与「只展示 UGC」重叠，
+  但那条会连直播卡和广告卡一起删，这条只管大卡）与「干掉云视听小电视」
+  （`player_no_activity_meta`，清空弹幕回包里的 `activity_meta` 活动浮层素材，移植自 MBGA）；
+  均出厂默认关。/ A big-card remover keyed on card type, and a switch clearing the dm reply's
+  `activity_meta` activity-overlay payload; both off by default.
+* **「干掉云视听小电视」只证到清空、未证到界面消失 / clearing proven, disappearance not**:
+  挂点、命中、清空三步有实机日志，而浮层从屏上消失要在活动期拿同一稿件肉眼 A/B，本版不声称已证。
+  / The hook fires and clears a real payload; the visual removal still needs an on-device A/B.
+
 ## v1.8.0
 
 > **需要先卸载旧版 / Uninstall the old version first**: 本版换了签名密钥，从 1.7.x 及更早版本原地升级
