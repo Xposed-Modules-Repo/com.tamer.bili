@@ -1,3 +1,19 @@
+## v1.9.2
+
+* **起播卡 0 KB/s 的两条根因都收掉了 / Both causes of the 0 KB/s startup stall are fixed**: 一是代理
+  同时在流的上限只有 12，而真机播放器的并行 range 连接会冲到 13，一被打满就 503 拒客，播放器并不
+  优雅回落而是整批拆连重连、重连又叠在没排干的旧连接上再次越过上限，形成「0 KB、偶尔跳 2 KB、隔几秒
+  才自愈」的正反馈——上限提到 64，真正的上游并发本就由下载器的并发闸把关，这里只兜底防泄漏；二是节点
+  空响应的封禁在进程内永不过期，宿主主进程连跑两天会把可用节点越缩越少直到代理被饿死（只有强停重启才
+  恢复），现在给每次 strike 记时间戳、按 120 秒时效惰性淘汰，长命进程能自愈。/ The stream cap of 12
+  tripped the player's own reconnect loop (raised to 64), and empty-reply node bans never expired
+  in-process (now a 120 s strike TTL).
+* **干净卡片偶尔仍吃掉上传者名字 / Clean cards no longer drop the uploader name**: 带角标那代小卡的
+  底部名字行读的是 `desc` 而不是 `args.up_name`，服务端把名字放进 up_name、把这一行让给角标时 desc
+  是空的，只清角标文字会让这行既无角标也无名字；现在清完角标把 up_name 回填进 desc，名字落回它本来
+  的槽位。/ The badged card's name row reads `desc`, not `args.up_name`; after clearing the badge we
+  now backfill `desc` from `up_name` so the name returns.
+
 ## v1.9.1
 
 * **干净卡片不再把上传者名字一起清掉 / Clean cards keep the uploader name**: 「推荐理由」那族数据原先
