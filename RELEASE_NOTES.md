@@ -1,3 +1,40 @@
+## v1.9.3
+
+* **官方下发的地址不再被扔掉 / The URLs Bilibili handed out are no longer discarded**: 国内档原先按
+  「国内节点表」筛选 playurl 下发的地址，真机一次播放下发的 cosov（41 条流）与 akamai（12 条流）
+  两条全被丢弃，候选于是 100% 变成「拿海外签名问大陆节点」，其中三个大陆镜像在本机连 DNS 记录都没有；
+  现在任何模式都保留下发原址，并让它们排在换节点派生的地址之前。/ Mainland mode no longer drops the
+  delivered URLs; they stay at the head of every candidate list.
+* **本机连不上的节点跨进程记账，只降级不删候选 / Nodes this machine cannot reach are remembered — demoted, never deleted**:
+  基线里 19 条 `out=0 disk=0 net=0` 全来自「DNS 查不到名字 / 连接被拒」这类链路侧失败，旧写法只在进程内退避，
+  每次起播重新撞一遍同样的死节点（首字节 max 2962 ms）；现在同一网络里攒够两次就把它挪到队尾，账本落在宿主
+  files 目录、以本机网络身份为键（被动读一次网卡，不监听、不轮询），十分钟 TTL 自愈，
+  节点交付过字节立刻销账；播放器中途挂断的那几次连不上也照样记账，不再白撞。/ Two link-side failures move a
+  node to the tail, keyed by the machine's own network identity so a network change invalidates the ledger on its
+  own; candidates are only re-ordered, never removed.
+* **两个进程记的账现在真的会相加 / The two processes now add up to the same count**: 落盘前那趟读盘合并按「谁的
+  时刻新听谁的整笔」覆盖，另一个进程较小的计数会把刚写下的降级进度顶回去，两次失败因此永远凑不齐门槛；现在
+  「叫不应」和「空转」各按自己最新的一笔合并。/ Each counter merges by its own timestamp, so a later process
+  continues the other's count instead of overwriting it.
+* **拨通了不吭声也算节点的问题 / A node that takes the call but never answers is charged too**: 首字节超时原先
+  只在进程内退避，每次起播照样重新撞一遍那个不吭声的地址；现在同一网络里三次这样的空转同样把它挪到队尾。
+  4xx 与 416 不进这本账——缺一个文件不该让整台机器在所有视频里被降级。/ Three zero-byte idle tries demote a node
+  as well, while HTTP errors stay out of the ledger.
+* **重连不再把退避记忆清零 / A reconnect no longer wipes the backoff memory**: 解析器原先按「路径＋签名」缓存，
+  而播放器每重连一次就把整套 query 重签，于是几乎每次重连都新建一个解析器，刚学到的退避与封禁跟着旧的一起被
+  淘汰；现在按文件路径复用同一个解析器，只把拨号用的签名换成刚下发的。/ Resolvers are cached by file path now,
+  so backoff survives reconnects while the signature used for dialling is refreshed.
+* **412/429 之后三十秒内每条流只走一条连接 / A 412 or 429 drops every stream to one connection for 30 s**:
+  限速信号说的是这台机器的总请求速率，不是某条地址的错，按节点退避只换掉被拒的那一条、其余七路照样撞，
+  一次被拒容易放大成整批重连（界面上的 0 KB）；现在降速窗内窗口收成一块、探路与对冲都暂停，只降并发、不关加速。
+  / The limit is charged globally for 30 s: the window collapses to one piece and probing/hedging pause, while
+  acceleration itself stays on.
+* **一批稿件在国际版又能看了 / A batch of videos is watchable again**: 「视频不见了哦」不是 IP 区域封锁
+  （同一手机同一网络的其它客户端能播、PC 网页也能看），而是服务端按 `mobi_app` 裁剪这批稿件的下发；现在取稿件
+  与取播放信息这两处（`bilibili.app.viewunite.v1` / `bilibili.app.playerunite.v1`）沿用 IP 属地那一份身份声明，
+  定域到这两个服务，不开全局档。/ The detail and play-info RPCs now carry the same domestic identity the
+  IP-label feature already uses, scoped to those two services rather than switching on global mode.
+
 ## v1.9.2
 
 * **起播卡 0 KB/s 的两条根因都收掉了 / Both causes of the 0 KB/s startup stall are fixed**: 一是代理
