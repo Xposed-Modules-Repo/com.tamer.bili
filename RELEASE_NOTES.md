@@ -1,3 +1,25 @@
+## v1.9.8
+
+* **这一页同时覆盖 1.9.4–1.9.7 / This page also covers 1.9.4–1.9.7**: 那四版只在测试机上滚过、没有单独发布，
+  内容一并随本版出：国际版 6.7.1 全量重挂锚、历史记录服务进身份改写名单、详情页广告族新增一个开关，
+  外加两处工程收尾（删掉已漂移的直播门控探针；构建入口先清空 class 输出目录，被删掉的匿名内部类不再进包）。
+* **6.7.1 全量重新挂锚 / Re-anchored across 6.7.1**: 离线缓存的取流地址跟着换到下载器实现类的两个 enqueue
+  首参（原先挂的 `onStartCommand` 与 spec 构造器在 6.7.1 上一次都不再走），直播后台播放门、首页推荐卡族与
+  不自动刷新入口、fnval 位、听完守卫改按角色验收，各功能开关的开／关两腿（含总闸基线）真机各跑一遍；
+  底栏隐藏「我的」在 6.7.1 的渲染层锚点也修了漂移。
+* **历史记录不再整条标「稿件失效」/ The history service joined the rewrite scope**: `svc=History` 之前没进
+  定域改写名单，真机开／关两腿各跑一遍，关掉后失效标记立刻回来。
+* **详情页广告族归到一个开关 / The detail-page ad family is now one switch**: 播放器下方商品卡改挂在
+  `CM.hasCmUnderPlayer()` 的返回值上（原先挂的两处回包回调在 6.7.1 上根本收不到稿件详情），同一条开关
+  也管简介区楼层广告与「视频提及」里的游戏推广卡（只摘 `MENTION_TYPE_GAME`，UP 自己的课程／充电链接不动）。
+* **配置投递修三处 / Three config-delivery fixes**: 宿主回前台就重读文件通道（不必再等冷启动）、应用成功后
+  回一条投递回执让界面把「已保存」和「宿主真的用上了」分开说、conf 路径改按当前用户区与宿主包名拼——
+  应用分身／安全文件夹／工作资料里「改了不生效、给了 root 也没用」正是这第三处造成的。
+* **root/shell 兜底换了落点并加了两道锁 / The root/shell fallback moved and got two locks**: KSU 域在宿主
+  files 能删不能建，原来那份兜底等于没有，现在先落 `/data/local/tmp`（写完切回前台即生效，非 root 也能
+  `adb push`）；正因为那里世界可写，读侧要求 `conf_key` 防伪键、且只在没有可信副本压得住它时才采纳，
+  兜底成败也一并挂进设置页状态行并写 logcat。
+
 ## v1.9.3
 
 * **官方下发的地址不再被扔掉 / The URLs Bilibili handed out are no longer discarded**: 国内档原先按

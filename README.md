@@ -13,8 +13,8 @@
 > Not affiliated with Bilibili Inc.; trademarks and copyrights belong to their owners.
 > For learning and research on Android hooking techniques only.
 
-面向**国际版哔哩哔哩** `com.bilibili.app.in`（实测适配 **6.3.0 / 6.4.0 / 6.5.0 / 6.6.0**）的 LSPosed 模块。
-An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`, tested against **6.3.0–6.6.0**).
+面向**国际版哔哩哔哩** `com.bilibili.app.in`（实测适配 **6.3.0 / 6.4.0 / 6.5.0 / 6.6.0 / 6.7.1**）的 LSPosed 模块。
+An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`, tested against **6.3.0–6.7.1**).
 
 源码、完整说明与逐版锚点校准见源仓：<https://github.com/mengwuzhuanshou/BiliTamer>
 
@@ -42,6 +42,7 @@ An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`,
 | 禁止竖屏播放器 No portrait player | 竖屏卡路由 `bilibili://story/<id>` 改写为 `bilibili://video/<id>`，落进横屏播放器（丢弃卡片自带预载参数段）/ Rewrite story routes on feed cards to the landscape player's minimal route (preload query dropped) | 关 off |
 | 关闭大卡片 No large cards | 按 `card_type` 移除占满整屏宽度的卡（轮播/大封面/内联播放），双列小卡与直播/广告卡不受影响 / Drop full-width feed cards by `card_type`; two-column, live and ad cards untouched | 关 off |
 | 干掉云视听小电视 No activity overlay | 清空弹幕回包 `DmViewReply` 里的 `activity_meta` 活动浮层素材 / Clear the `activity_meta` activity-overlay material from the dm reply | 关 off |
+| 干掉详情页广告位 No detail-page ads | 关掉播放器下方商品卡、简介区楼层广告与「视频提及」里的游戏推广卡（只摘 `MENTION_TYPE_GAME`，UP 自己的课程／充电链接不动）；**出厂默认开**，因为这些槽位是身份改写让服务端把客户端当国内版才排期下发的 / Strip the under-player product card, the description-area floor ad and game-promotion mentions (`MENTION_TYPE_GAME` only — the uploader's own course and purchase links stay); **on by default**, since these slots only appear because the identity rewrite makes the server schedule them as domestic | 开 on |
 | 直播后台播放入口 Live background play | 解锁直播页的后台播放入口（无设置项，随模块生效）/ Unlock the background-play entry on the live page (no settings switch; active with the module) | 开 on |
 | 下载加速 Download acceleration | 在线播放与离线下载改接本机回环代理，多 CDN 节点多区间并发取数、按序回吐；离线取到的字节前台播放直接复用（实验特性，缓存默认配额 2 GB、LRU，DRM/免流地址不接管）/ Route playback and offline downloads through a loopback proxy that fetches ranges concurrently from multiple CDN nodes; offline bytes are reused by foreground playback (beta; 2 GB LRU cache default; DRM/zero-rating URLs untouched) | 关 off |
 | 配置同步 Config sync | 设置保存经启动投递+host-conf 代次协议生效，不依赖 root / Settings delivered at launch with a host-conf generation protocol — no root needed | — |
@@ -52,7 +53,7 @@ Every switch is independently reversible; the master switch disables the whole m
 ## 环境要求 / Requirements
 
 * 已 root 的 Android 设备：Magisk 或 KernelSU + Zygisk + LSPosed / rooted device with Zygisk + LSPosed;
-* 国际版哔哩哔哩 6.3.0–6.6.0（com.bilibili.app.in，6.6.0 = 9130300）/ international Bilibili 6.3.0–6.6.0.
+* 国际版哔哩哔哩 6.3.0–6.7.1（com.bilibili.app.in，6.6.0 = 9130300）/ international Bilibili 6.3.0–6.7.1.
 
 ## 使用方法 / Installation
 
@@ -65,17 +66,17 @@ Every switch is independently reversible; the master switch disables the whole m
 
 * 评论/字幕走 KMP moss gRPC：在 moss-common-headers 拦截器里按 service/method 打 ThreadLocal
   标记，身份头提供者据此把 `x-bili-metadata-bin`/`x-bili-device-bin` 里的 mobiApp 从
-  `android_i` 改为 `android`（protobuf 变长长度前缀同步重建）。描述符族随版本整族换名，
+  `android_i` 改为 `android_hd`（protobuf 变长长度前缀同步重建）。描述符族随版本整族换名，
   按「名字提示 + 形状校验」定位 / Comment & subtitle RPCs are scoped via the moss-common-headers
   interceptor: before `chain.proceed()` the service/method is read and a ThreadLocal marker set;
-  the header provider then rewrites the mobiApp protobuf bytes (`android_i` → `android`,
+  the header provider then rewrites the mobiApp protobuf bytes (`android_i` → `android_hd`,
   rebuilding the varint length prefix). Obfuscated descriptor families are resolved by name
   hints plus shape validation;
 * 空间页走 REST：改写空间页 API 专属拦截器 `addCommonParam` 里的 `mobi_app=android_i`，
   天然按页面定域 / Profile pages go through REST: the space-API-specific interceptor's
   `addCommonParam` rewrites `mobi_app` — scoped to the space page by construction;
-* 只重写 `android_i`→`android`，不触碰 android_hd；心跳/播放等其它服务保持国际版身份
-  / Only `android_i` → `android` is rewritten; heartbeat and playback keep the international identity;
+* moss 二进制头取 `android_hd`（国内 HD 端）、空间页 REST 取 `android`（国内普通端）：两档不等价，纯 `android` 会顺带排下国内详情页广告位；IP 属地与锁区解锁两项两档实测等价。心跳/播放等其它服务保持国际版身份
+  / The moss binary header carries `android_hd` while space-page REST params carry `android` — not equivalent: plain `android` also gets domestic detail-page ad slots scheduled in, while IP location and region-locked visibility measure the same on both; heartbeats and playback keep the international identity;
 * 完整的机制、坑与逐版校准方法见源仓 [PITFALLS.md](https://github.com/mengwuzhuanshou/BiliTamer/blob/main/PITFALLS.md).
 
 ## 排查 / Troubleshooting
@@ -89,7 +90,7 @@ Every switch is independently reversible; the master switch disables the whole m
 
 ## 已知限制 / Known limitations
 
-* 仅适配实测版本 6.3.0–6.6.0；其它版本需自行校准混淆锚点 / tested against 6.3.0–6.6.0 only;
+* 仅适配实测版本 6.3.0–6.7.1；其它版本需自行校准混淆锚点 / tested against 6.3.0–6.7.1 only;
 * 首页四项（只展示 UGC／干净卡片／禁止竖屏／关闭大卡片）挂在推荐流的协议解析出口上：只影响
   之后发出的流请求，已渲染的卡片要下拉刷新/切页/重进首页才会变 / The four home-feed switches
   act at the protocol parse exit, so they only affect subsequent feed requests — already
