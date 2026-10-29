@@ -75,6 +75,11 @@ Every switch is independently reversible; the master switch disables the whole m
 * 空间页走 REST：改写空间页 API 专属拦截器 `addCommonParam` 里的 `mobi_app=android_i`，
   天然按页面定域 / Profile pages go through REST: the space-API-specific interceptor's
   `addCommonParam` rewrites `mobi_app` — scoped to the space page by construction;
+* 详情页那一族只武装 `View` 一个方法：整族换身份时服务端会在回包里按国内端把弹幕池裁掉（视频内弹幕整片消失），
+  而取流那族（`playerunite`/`playurl`）必须照常全武装，否则锁区稿件详情页能开、播放器却停在「加载失败」
+  / Within the detail-page family only `View` is armed — arming the whole family makes the server trim the
+  danmaku pool for the domestic client (in-video danmaku disappears), while the playurl family must stay
+  fully armed or a region-locked video opens but the player stops at 加载失败;
 * moss 二进制头取 `android_hd`（国内 HD 端）、空间页 REST 取 `android`（国内普通端）：两档不等价，纯 `android` 会顺带排下国内详情页广告位；IP 属地与锁区解锁两项两档实测等价。心跳/播放等其它服务保持国际版身份
   / The moss binary header carries `android_hd` while space-page REST params carry `android` — not equivalent: plain `android` also gets domestic detail-page ad slots scheduled in, while IP location and region-locked visibility measure the same on both; heartbeats and playback keep the international identity;
 * 完整的机制、坑与逐版校准方法见源仓 [PITFALLS.md](https://github.com/mengwuzhuanshou/BiliTamer/blob/main/PITFALLS.md).

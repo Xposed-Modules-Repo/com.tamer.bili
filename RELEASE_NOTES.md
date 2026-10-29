@@ -1,3 +1,15 @@
+## v1.9.9
+
+* **视频弹幕回来了 / In-video danmaku is back**: 上一版把详情页那一族整族换成国内身份，服务端就在
+  回包里按国内端裁剪弹幕池，视频里的弹幕整片没了。现在这一族只武装 `View` 一个方法（`AIRelateAsync`
+  与 `ViewProgress` 里有一个是那条裁剪的触发点），取流那族照常全武装。真机三格同跑：弹幕满屏、
+  已知锁区稿件照常打开并出画面、评论区 IP 属地照旧。
+  / The previous release armed the whole detail-page family with the domestic identity, so the server
+  started trimming the danmaku pool for that client and in-video danmaku disappeared. Only `View` is
+  armed there now (one of `AIRelateAsync` / `ViewProgress` is what triggers the trim) while the playurl
+  family keeps its full scope. Verified on device in three places at once: danmaku back, the known
+  region-locked video still opens and plays, comment IP locations unchanged.
+
 ## v1.9.8
 
 * **这一页同时覆盖 1.9.4–1.9.7 / This page also covers 1.9.4–1.9.7**: 那四版只在测试机上滚过、没有单独发布，
