@@ -1,3 +1,9 @@
+## v1.9.11
+
+* **6.9.0 全量重挂锚 / Re-anchored across 6.9.0**: feed 解析三件套、首页布局与不自动刷新、听完守卫、直播后台门、解码与 fnval 锚点全部按角色/形状重新定位（6.9.0 混淆名整体扁平化，不再认类名），真机验收 feed 刷新/加载更多批批 firing、各改写腿 ok 行齐备。
+* **评论/空间页 IP 属地限定改写在 6.9.0 复活 / Scoped IP rewrite works on 6.9.0 again**: moss 二进制头提供者改成了 suspend 协程，写点落在一元 RPC 同步窗 resume 之后且跨线程，旧 ThreadLocal scope 标记过不去⇒armed 却恒不 rewritten；现在写点拿自持描述符自解析服务族自判，评论 reply v1/v2 与 View/Player 的 fired 与 rewritten 同毫秒配对验收（330→331 / 302→303 字节）。
+* **REST 参数腿兜底挂基类 / REST params leg falls back to the base class**: okretro 参数基类在 6.9.0 改名且 intercept 移进基类，原子类独查找法静默空转；参数改写兜底挂基类 addCommonParam(Map)，定域改认拦截器腿记下的 URL ThreadLocal，空间页/评论 REST 的 map 改写不再悬空。
+
 ## v1.9.10
 
 * **6.8.0 全量重挂锚 / Re-anchored across 6.8.0**: 宿主 6.8.0 上五处漂移锚点重新定位——头像进「我的」的路由/选中动作（`KK1.g`/`KK1.c`）、fnval 位（`JQ1.a`）、默认音轨构建（`MediaResource.G(int,int)`，杜比/无损字段改按类型声明序认）、听完守卫（`UQ1.m`）、直播后台播放门（`XX.e$b/$c.o1`）。

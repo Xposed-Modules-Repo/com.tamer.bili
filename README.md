@@ -13,8 +13,8 @@
 > Not affiliated with Bilibili Inc.; trademarks and copyrights belong to their owners.
 > For learning and research on Android hooking techniques only.
 
-面向**国际版哔哩哔哩** `com.bilibili.app.in`（实测适配 **6.3.0 / 6.4.0 / 6.5.0 / 6.6.0 / 6.7.1 / 6.8.0**）的 LSPosed 模块。
-An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`, tested against **6.3.0–6.8.0**).
+面向**国际版哔哩哔哩** `com.bilibili.app.in`（实测适配 **6.3.0 / 6.4.0 / 6.5.0 / 6.6.0 / 6.7.1 / 6.8.0 / 6.9.0**）的 LSPosed 模块。
+An LSPosed module for the **international Bilibili app** (`com.bilibili.app.in`, tested against **6.3.0–6.9.0**).
 
 源码、完整说明与逐版锚点校准见源仓：<https://github.com/mengwuzhuanshou/BiliTamer>
 
@@ -53,7 +53,7 @@ Every switch is independently reversible; the master switch disables the whole m
 ## 环境要求 / Requirements
 
 * 已 root 的 Android 设备：Magisk 或 KernelSU + Zygisk + LSPosed / rooted device with Zygisk + LSPosed;
-* 国际版哔哩哔哩 6.3.0–6.8.0（com.bilibili.app.in，6.6.0 = 9130300）/ international Bilibili 6.3.0–6.8.0.
+* 国际版哔哩哔哩 6.3.0–6.9.0（com.bilibili.app.in，6.6.0 = 9130300）/ international Bilibili 6.3.0–6.9.0.
 
 ## 使用方法 / Installation
 
@@ -95,7 +95,7 @@ Every switch is independently reversible; the master switch disables the whole m
 
 ## 已知限制 / Known limitations
 
-* 仅适配实测版本 6.3.0–6.8.0；其它版本需自行校准混淆锚点 / tested against 6.3.0–6.8.0 only;
+* 仅适配实测版本 6.3.0–6.9.0；其它版本需自行校准混淆锚点 / tested against 6.3.0–6.9.0 only;
 * 首页四项（只展示 UGC／干净卡片／禁止竖屏／关闭大卡片）挂在推荐流的协议解析出口上：只影响
   之后发出的流请求，已渲染的卡片要下拉刷新/切页/重进首页才会变 / The four home-feed switches
   act at the protocol parse exit, so they only affect subsequent feed requests — already
